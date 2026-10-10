@@ -1,11 +1,12 @@
 import json
+from typing import Any
 
+from json_repair import repair_json
 from langchain.agents import create_agent
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
 from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnableLambda
 from langchain_groq import ChatGroq
-from json_repair import repair_json
 from pydantic import ValidationError
 
 from app.config import get_settings
@@ -60,10 +61,14 @@ _planning_prompt = PromptTemplate.from_template(
     "Do not include review counts, long descriptions, or narrative outside the JSON.\n\n"
     "Evidence:\n{evidence}"
 )
-_to_messages = RunnableLambda(lambda value: [
-    SystemMessage(content="You are the final travel planner. Do not invent facts or silently change locations."),
-    HumanMessage(content=value),
-])
+_to_messages = RunnableLambda(
+    lambda value: [
+        SystemMessage(
+            content="You are the final travel planner. Do not invent facts or silently change locations."
+        ),
+        HumanMessage(content=value),
+    ]
+)
 
 
 def _last_content(result: dict) -> str:
@@ -74,36 +79,98 @@ def _last_content(result: dict) -> str:
     return "No specialist response returned."
 
 
-def _parse_plan(content: str) -> dict:
+def _content_text(content: Any) -> str:
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        parts = []
+        for block in content:
+            if isinstance(block, str):
+                parts.append(block)
+            elif isinstance(block, dict):
+                text = block.get("text") or block.get("content")
+                if text:
+                    parts.append(_content_text(text))
+        return "".join(parts)
+    if isinstance(content, dict):
+        return _content_text(content.get("text") or content.get("content") or "")
+    return ""
+
+
+def _parse_plan(content: Any) -> dict:
     """Strip optional Markdown fences and validate the final response with Pydantic."""
-    candidate = content.strip()
+    candidate = _content_text(content).strip()
     if candidate.startswith("```"):
         candidate = candidate.split("\n", 1)[1] if "\n" in candidate else candidate
         candidate = candidate.rsplit("```", 1)[0].strip()
-    try:
-        return TripPlan.model_validate_json(candidate).model_dump(mode="json")
-    except (ValidationError, ValueError):
+    candidates = [candidate]
+    start = candidate.find("{")
+    end = candidate.rfind("}")
+    if start >= 0 and end > start:
+        candidates.append(candidate[start : end + 1])
+    for candidate_json in candidates:
         try:
-            repaired = repair_json(candidate)
-            return TripPlan.model_validate_json(repaired).model_dump(mode="json")
+            return TripPlan.model_validate_json(candidate_json).model_dump(mode="json")
         except (ValidationError, ValueError):
-            pass
-        return TripPlan(warnings=["The planner returned non-JSON output.", candidate]).model_dump(mode="json")
+            try:
+                repaired = repair_json(candidate_json)
+                return TripPlan.model_validate_json(repaired).model_dump(mode="json")
+            except (ValidationError, ValueError):
+                continue
+    warnings = ["The planner returned non-JSON output."]
+    if candidate:
+        warnings.append(candidate)
+    return TripPlan(warnings=warnings).model_dump(mode="json")
 
 
 def run_trip_planner(request: dict) -> dict:
     """Run specialist agents, then a constrained synthesis agent for one trip request."""
     common = json.dumps(request, default=str)
     weather = weather_agent.invoke({"messages": [HumanMessage(content=f"Trip request: {common}")]})
-    discovery = discovery_agent.invoke({"messages": [HumanMessage(content=f"Trip request: {common}. Find attractions and food stops.")]})
-    guides = guide_agent.invoke({"messages": [HumanMessage(content=f"Find guides for this trip request: {common}")]})
-    evidence = json.dumps({
-        "weather": _last_content(weather)[:1800],
-        "discovery": _last_content(discovery)[:2800],
-        "guides": _last_content(guides)[:1800],
-    })
+    discovery = discovery_agent.invoke(
+        {
+            "messages": [
+                HumanMessage(content=f"Trip request: {common}. Find attractions and food stops.")
+            ]
+        }
+    )
+    guides = (
+        guide_agent.invoke(
+            {"messages": [HumanMessage(content=f"Find guides for this trip request: {common}")]}
+        )
+        if request.get("needs_guide")
+        else None
+    )
+    evidence = json.dumps(
+        {
+            "weather": _last_content(weather)[:1800],
+            "discovery": _last_content(discovery)[:2800],
+            "guides": _last_content(guides)[:1800] if guides else "Guide lookup not requested.",
+        }
+    )
     prompt = _planning_prompt.format(**request, evidence=evidence)
     planning_messages = _to_messages.invoke(prompt)
-    final = _model().invoke(planning_messages)
-    plan = _parse_plan(str(final.content))
+    try:
+        structured = (
+            _model().with_structured_output(TripPlan, include_raw=True).invoke(planning_messages)
+        )
+        parsed = structured.get("parsed") if isinstance(structured, dict) else None
+        if parsed is not None:
+            plan = (
+                parsed.model_dump(mode="json")
+                if isinstance(parsed, TripPlan)
+                else TripPlan.model_validate(parsed).model_dump(mode="json")
+            )
+        else:
+            raw = structured.get("raw") if isinstance(structured, dict) else structured
+            final_content = getattr(raw, "content", raw)
+            if not _content_text(final_content):
+                final_content = getattr(raw, "additional_kwargs", {}).get("reasoning_content", "")
+            plan = _parse_plan(final_content)
+    except Exception:
+        final = _model().invoke(planning_messages)
+        final_content = final.content
+        if not _content_text(final_content):
+            final_content = final.additional_kwargs.get("reasoning_content", "")
+        plan = _parse_plan(final_content)
     return {"request": request, "plan": plan}

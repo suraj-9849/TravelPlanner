@@ -1,0 +1,367 @@
+.app-shell {
+  width: min(1120px, calc(100% - 48px));
+  margin: auto;
+}
+.topbar {
+  height: 88px;
+  border-bottom: 1px solid #deddd8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #25231f;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  text-decoration: none;
+}
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  background: #d5ef62;
+  color: #25231f;
+  font-family: Georgia, serif;
+  font-size: 21px;
+  font-style: italic;
+}
+.topbar-note,
+.muted {
+  color: #85837b;
+  font-size: 13px;
+}
+.hero-copy {
+  max-width: 720px;
+  padding: 92px 0 60px;
+}
+.eyebrow,
+.card-label {
+  color: #7b8063;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  margin: 0 0 18px;
+  text-transform: uppercase;
+}
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+h1 {
+  font-family: Georgia, serif;
+  font-size: clamp(52px, 8vw, 96px);
+  font-weight: 400;
+  letter-spacing: -0.07em;
+  line-height: 0.94;
+  margin-bottom: 30px;
+}
+h1 em {
+  color: #a19c8e;
+  font-style: italic;
+}
+h2 {
+  font-family: Georgia, serif;
+  font-size: 34px;
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  margin: 0;
+}
+h3 {
+  font-family: Georgia, serif;
+  font-size: 20px;
+  font-weight: 400;
+  margin: 0 0 6px;
+}
+.intro {
+  color: #6f6d66;
+  font-size: 16px;
+  line-height: 1.6;
+  max-width: 490px;
+}
+.trip-form,
+.results {
+  border-top: 1px solid #25231f;
+  padding: 28px 0 44px;
+}
+.form-heading {
+  align-items: center;
+  display: flex;
+  gap: 18px;
+  margin-bottom: 30px;
+}
+.form-heading span {
+  color: #909083;
+  font-size: 12px;
+}
+.form-grid {
+  display: grid;
+  gap: 25px 22px;
+  grid-template-columns: repeat(4, 1fr);
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.field span {
+  color: #5e5c56;
+  font-size: 12px;
+  font-weight: 600;
+}
+.field small {
+  color: #aaa69a;
+  font-weight: 400;
+}
+.field-wide {
+  grid-column: span 2;
+}
+input {
+  border: 0;
+  border-bottom: 1px solid #bcbab1;
+  border-radius: 0;
+  background: transparent;
+  color: #25231f;
+  outline: 0;
+  padding: 10px 0;
+  width: 100%;
+}
+input:focus {
+  border-color: #25231f;
+}
+input::placeholder {
+  color: #aaa69a;
+}
+.form-actions {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 38px;
+}
+.check-label {
+  align-items: center;
+  color: #6f6d66;
+  display: flex;
+  font-size: 13px;
+  gap: 8px;
+}
+.check-label input {
+  accent-color: #25231f;
+  width: auto;
+}
+.primary-button,
+.small-button {
+  background: #25231f;
+  border: 0;
+  color: #fff;
+  cursor: pointer;
+  padding: 15px 22px;
+}
+.primary-button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+.primary-button span {
+  color: #d5ef62;
+  margin-left: 18px;
+}
+.alert,
+.warning {
+  background: #fff3dc;
+  color: #805e2a;
+  padding: 14px 18px;
+}
+.results-heading,
+.section-heading {
+  align-items: end;
+  display: flex;
+  justify-content: space-between;
+}
+.results-heading {
+  margin-bottom: 30px;
+}
+.results-heading .eyebrow {
+  margin-bottom: 10px;
+}
+.date-chip {
+  color: #7d7b73;
+  font-size: 13px;
+}
+.warning {
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+.result-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+.result-card,
+.daily-plan,
+.guides {
+  background: #eeede7;
+  padding: 24px;
+}
+.weather-card {
+  background: #d5ef62;
+}
+.weather-value {
+  font-family: Georgia, serif;
+  font-size: 20px;
+  line-height: 1.4;
+}
+.item-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.item-list li {
+  border-bottom: 1px solid #d5d3cb;
+  font-size: 14px;
+  line-height: 1.45;
+  padding: 10px 0;
+}
+.item-list li:first-child {
+  padding-top: 0;
+}
+.daily-plan {
+  margin-top: 12px;
+}
+.day {
+  border-top: 1px solid #d5d3cb;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: 38px 1fr;
+  padding: 20px 0;
+}
+.day-number {
+  color: #99968b;
+  font-size: 12px;
+}
+.day p {
+  color: #6f6d66;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+.guides {
+  margin-top: 12px;
+}
+.section-heading {
+  margin-bottom: 22px;
+}
+.section-heading span {
+  color: #85837b;
+  font-size: 13px;
+}
+.guide {
+  align-items: center;
+  border-top: 1px solid #d5d3cb;
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  padding: 18px 0;
+  position: relative;
+}
+.guide p,
+.rating {
+  color: #77746a;
+  font-size: 13px;
+  margin: 0 0 8px;
+}
+.rating {
+  color: #7d8062;
+}
+.text-button {
+  background: none;
+  border: 0;
+  color: #25231f;
+  cursor: pointer;
+  font-size: 13px;
+  text-decoration: underline;
+}
+.booking {
+  align-items: center;
+  display: flex;
+  gap: 15px;
+  position: absolute;
+  right: 0;
+  top: 72px;
+  z-index: 1;
+}
+.booking input {
+  background: #f7f6f2;
+  padding: 9px;
+  width: 170px;
+}
+.small-button {
+  font-size: 12px;
+  padding: 10px 13px;
+  white-space: nowrap;
+}
+.booking-status {
+  color: #5d7430;
+  font-size: 13px;
+}
+.footer {
+  border-top: 1px solid #deddd8;
+  color: #aaa69a;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  padding: 32px 0 50px;
+  text-transform: uppercase;
+}
+@media (max-width: 720px) {
+  .app-shell {
+    width: min(100% - 32px, 560px);
+  }
+  .topbar-note {
+    display: none;
+  }
+  .hero-copy {
+    padding: 70px 0 50px;
+  }
+  .form-grid,
+  .result-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .field-wide {
+    grid-column: span 2;
+  }
+  .form-actions,
+  .results-heading,
+  .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .primary-button {
+    width: 100%;
+  }
+  .booking {
+    position: static;
+    width: 100%;
+  }
+  .booking input {
+    flex: 1;
+  }
+}
+@media (max-width: 460px) {
+  .form-grid,
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
+  .field-wide {
+    grid-column: auto;
+  }
+  .check-label {
+    align-items: flex-start;
+  }
+}

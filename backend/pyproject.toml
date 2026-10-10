@@ -17,3 +17,21 @@ dependencies = [
     "rich>=13.9.0",
     "json-repair>=0.30.0",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.0",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = ["prisma"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"

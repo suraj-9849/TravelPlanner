@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     google_maps_api_key: str
     app_env: str = "development"
     log_level: str = "INFO"
+    cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 

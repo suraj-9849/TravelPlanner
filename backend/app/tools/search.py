@@ -56,26 +56,34 @@ def discover_nearby_places(location: str, food_preferences: list[str] | None = N
     one model-visible schema to control prompt size while preserving both sources.
     """
     preferences = ", ".join(food_preferences or []) or "local specialties"
-    attractions = search_local_places.invoke({
-        "query": "popular tourist attractions and things to do",
-        "location": location,
-        "max_results": 5,
-    })
-    food_search = search_local_places.invoke({
-        "query": f"{preferences} restaurants and food stops",
-        "location": location,
-        "max_results": 5,
-    })
-    mapped_attractions = find_nearby_places.invoke({
-        "location": location,
-        "place_type": "tourist_attraction",
-        "radius_meters": 10000,
-    })
-    mapped_food = find_nearby_places.invoke({
-        "location": location,
-        "place_type": "restaurant",
-        "radius_meters": 10000,
-    })
+    attractions = search_local_places.invoke(
+        {
+            "query": "popular tourist attractions and things to do",
+            "location": location,
+            "max_results": 5,
+        }
+    )
+    food_search = search_local_places.invoke(
+        {
+            "query": f"{preferences} restaurants and food stops",
+            "location": location,
+            "max_results": 5,
+        }
+    )
+    mapped_attractions = find_nearby_places.invoke(
+        {
+            "location": location,
+            "place_type": "tourist_attraction",
+            "radius_meters": 10000,
+        }
+    )
+    mapped_food = find_nearby_places.invoke(
+        {
+            "location": location,
+            "place_type": "restaurant",
+            "radius_meters": 10000,
+        }
+    )
     return {
         "tavily_attractions": attractions,
         "tavily_food": food_search,

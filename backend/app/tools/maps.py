@@ -12,7 +12,9 @@ class NearbyPlacesInput(BaseModel):
 
 
 @tool(args_schema=NearbyPlacesInput)
-def find_nearby_places(location: str, place_type: str = "tourist_attraction", radius_meters: int = 10000) -> list[dict]:
+def find_nearby_places(
+    location: str, place_type: str = "tourist_attraction", radius_meters: int = 10000
+) -> list[dict]:
     """Find nearby Google Maps places with ratings, addresses, coordinates, and Maps links.
 
     place_type can be tourist_attraction, restaurant, cafe, museum, or another
