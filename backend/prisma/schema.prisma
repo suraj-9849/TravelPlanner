@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-py"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Guide {
+  id            Int      @id @default(autoincrement())
+  name          String   @db.VarChar(120)
+  location      String   @db.VarChar(120)
+  phone_number  String   @db.VarChar(30)
+  languages     String   @default("English,Hindi") @db.VarChar(200)
+  price_per_day Float
+  rating        Float
+  specialties   String   @default("local sightseeing")
+
+  @@index([name])
+  @@index([location])
+  @@index([rating])
+  @@map("guides")
+}
+
+model Booking {
+  id            Int      @id @default(autoincrement())
+  guide_id      Int
+  traveler_name String   @db.VarChar(120)
+  start_date    String   @db.VarChar(10)
+  days          Int
+  status        String   @default("requested") @db.VarChar(30)
+  created_at    DateTime @default(now())
+
+  @@index([guide_id])
+  @@map("guide_bookings")
+}
