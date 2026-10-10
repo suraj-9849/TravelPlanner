@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { bookGuide } from '../lib/api'
 import type { Guide, TripPlanResponse } from '../lib/types'
 import { formatDate, prettyValue } from '../utils/format'
+import { downloadTripPlanPdf } from '../utils/pdf'
 
 export function TripResults({ response }: { response: TripPlanResponse }) {
   const { plan, request } = response
@@ -12,9 +13,17 @@ export function TripResults({ response }: { response: TripPlanResponse }) {
           <p className="eyebrow">your itinerary</p>
           <h2>{plan.destination || request.location}</h2>
         </div>
-        <span className="date-chip">
-          {formatDate(request.start_date)} · {request.days} days
-        </span>
+        <div className="results-actions">
+          <span className="date-chip">
+            {formatDate(request.start_date)} · {request.days} days
+          </span>
+          <button
+            className="download-button"
+            onClick={() => downloadTripPlanPdf(response)}
+          >
+            Download PDF <span aria-hidden="true">↓</span>
+          </button>
+        </div>
       </div>
       {plan.warnings?.map((warning, index) => (
         <p className="warning" key={index}>

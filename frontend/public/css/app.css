@@ -38,7 +38,7 @@
 }
 .hero-copy {
   max-width: 720px;
-  padding: 92px 0 60px;
+  padding: 60px 0 60px;
 }
 .eyebrow,
 .card-label {
@@ -85,11 +85,6 @@ h3 {
   font-size: 16px;
   line-height: 1.6;
   max-width: 490px;
-}
-.trip-form,
-.results {
-  border-top: 1px solid #25231f;
-  padding: 28px 0 44px;
 }
 .form-heading {
   align-items: center;
@@ -193,6 +188,28 @@ input::placeholder {
 .date-chip {
   color: #7d7b73;
   font-size: 13px;
+}
+.results-actions {
+  align-items: center;
+  display: flex;
+  gap: 22px;
+}
+.download-button {
+  background: transparent;
+  border: 1px solid #25231f;
+  color: #25231f;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 11px 14px;
+}
+.download-button span {
+  color: #7b8063;
+  font-size: 16px;
+  margin-left: 8px;
+}
+.download-button:hover {
+  background: #25231f;
+  color: #fff;
 }
 .warning {
   font-size: 13px;
@@ -341,6 +358,11 @@ input::placeholder {
     align-items: flex-start;
     flex-direction: column;
     gap: 22px;
+  }
+  .results-actions {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
   }
   .primary-button {
     width: 100%;

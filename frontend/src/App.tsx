@@ -32,7 +32,6 @@ function App() {
         <span className="topbar-note">thoughtful trips, made simple</span>
       </header>
       <section className="hero-copy">
-        <p className="eyebrow">your next good idea</p>
         <h1>
           Go somewhere
           <br />

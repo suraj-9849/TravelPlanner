@@ -13,7 +13,13 @@ def observe_tool_call(request, handler):
     tool_name = request.tool_call["name"]
     logger.info("travelplanner tool call: %s", tool_name)
     try:
-        return handler(request)
+        result = handler(request)
+        # Groq rejects an empty array/null as the content of a role=tool
+        # message. Empty search results are valid, so keep the result but
+        # serialize that empty value to a non-empty tool response.
+        if isinstance(result, ToolMessage) and result.content in (None, "", []):
+            return result.model_copy(update={"content": "[]"})
+        return result
     except Exception as exc:
         logger.exception("travelplanner tool failed: %s", tool_name)
         return ToolMessage(
